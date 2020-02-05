@@ -1,0 +1,5 @@
+extends ../layouts/email.pug
+
+block content
+  h1(style='margin: 0 0 20px 0; padding: 0 0 5px 0;border-bottom: 2px solid #FDD835; font-size: 30px; font-weight: 300;')!= title
+  p(style='margin: 0 0 20px 0;')!= __('Welcome %s', name)

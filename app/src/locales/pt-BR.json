@@ -1,0 +1,14 @@
+{
+	"Welcome %s": "Welcome %s",
+	"Fill your name": "Fill your name",
+	"Password requires at least 6 characteres": "Password requires at least 6 characteres",
+	"Fill your name, Password requires at least 6 characteres": "Fill your name, Password requires at least 6 characteres",
+	"Token expired": "Token expired",
+	"Invalid confirmation token": "Invalid confirmation token",
+	"Reset password link": "Reset password link",
+	"Hello %s": "Hello %s",
+	"To create a new password, click the link below:": "To create a new password, click the link below:",
+	"If you have not asked for this, please rest assured that your password remains the same.": "If you have not asked for this, please rest assured that your password remains the same.",
+	"Unauthorized": "Unauthorized",
+	"User not found": "User not found"
+}

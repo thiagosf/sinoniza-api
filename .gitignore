@@ -1,0 +1,15 @@
+.azk
+.DS_Store
+node_modules
+app/dist/*
+!app/dist/.keep
+app/public/files/*
+!app/public/files/.keep
+app/tmp/*
+!app/tmp/.keep
+.env
+app/jsdoc
+app/logs/*
+!app/logs/.keep
+mysql/*
+mongodb/*

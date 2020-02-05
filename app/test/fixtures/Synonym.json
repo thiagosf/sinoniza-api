@@ -1,0 +1,17 @@
+[{
+  "id": 1,
+  "word_id": 1,
+  "synonym_id": 3
+}, {
+  "id": 2,
+  "word_id": 1,
+  "synonym_id": 4
+}, {
+  "id": 3,
+  "word_id": 2,
+  "synonym_id": 5
+}, {
+  "id": 4,
+  "word_id": 2,
+  "synonym_id": 6
+}]

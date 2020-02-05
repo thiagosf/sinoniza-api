@@ -1,0 +1,43 @@
+[{
+  "id": 1,
+  "locale_id": 1,
+  "word": "esperto",
+  "meaning": "atento",
+  "created_at": "2020-02-05 07:55:45",
+  "updated_at": "2020-02-05 07:55:45"
+}, {
+  "id": 2,
+  "locale_id": 1,
+  "word": "legal",
+  "meaning": "adjetivo",
+  "created_at": "2020-02-05 07:55:45",
+  "updated_at": "2020-02-05 07:55:45"
+}, {
+  "id": 3,
+  "locale_id": 1,
+  "word": "inteligente",
+  "meaning": "atento",
+  "created_at": "2020-02-05 07:55:45",
+  "updated_at": "2020-02-05 07:55:45"
+}, {
+  "id": 4,
+  "locale_id": 1,
+  "word": "crânio",
+  "meaning": "atento",
+  "created_at": "2020-02-05 07:55:45",
+  "updated_at": "2020-02-05 07:55:45"
+}, {
+  "id": 5,
+  "locale_id": 1,
+  "word": "divertido",
+  "meaning": "adjetivo",
+  "created_at": "2020-02-05 07:55:45",
+  "updated_at": "2020-02-05 07:55:45"
+}, {
+  "id": 6,
+  "locale_id": 1,
+  "word": "simpático",
+  "meaning": "adjetivo",
+  "created_at": "2020-02-05 07:55:45",
+  "updated_at": "2020-02-05 07:55:45"
+}]

@@ -1,0 +1,24 @@
+import models from './src/models'
+import tasks from './tasks'
+
+const onError = (error) => {
+  console.error(error)
+  onComplete()
+}
+
+const onComplete = () => {
+  process.exit(0)
+}
+
+for (let name in tasks) {
+  const items = tasks[name]
+  namespace(name, function () {
+    for (let i in items) {
+      const item = items[i]
+      desc(item.description)
+      task(i, { async: true }, (...args) => {
+        item.handler(args, jake, models).then(onComplete).catch(onError)
+      })
+    }
+  })
+}

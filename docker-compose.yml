@@ -1,0 +1,58 @@
+version: "3"
+services:
+  web:
+    build:
+      dockerfile: ./docker/web.Dockerfile
+      context: .
+    image: sinoniza-api
+    container_name: sinoniza-api
+    ports:
+      - "3000:3000"
+    command: npm start
+    env_file:
+      - ./app/.env
+    networks:
+      - sinoniza-api-network
+    depends_on:
+      - db
+      - db-test
+    links:
+      - db
+      - db-test
+    volumes:
+      - ./app:/var/www
+      - /var/www/node_modules
+
+  db:
+    image: mysql:5.7
+    container_name: sinoniza-api-mysql
+    volumes:
+      - ./mysql/:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - sinoniza-api-network
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: my_db
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+
+  db-test:
+    image: mysql:5.7
+    container_name: sinoniza-api-mysql-test
+    volumes:
+      - /var/lib/mysql
+    ports:
+      - 3307:3306
+    networks:
+      - sinoniza-api-network
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: my_test_db
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+
+networks:
+  sinoniza-api-network:
+    driver: bridge
