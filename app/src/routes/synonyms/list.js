@@ -1,7 +1,10 @@
 import _ from 'lodash'
+import { queuePromises } from '../../helpers'
+import { SinonimosCrawler } from '../../services'
 
 export default async (req, res, next) => {
   try {
+    const localeId = 1
     const { phrase } = req.query
     const minPhraseLength = 2
     const minWordLength = 2
@@ -21,58 +24,57 @@ export default async (req, res, next) => {
       throw new Error('Phrase too large')
     }
 
-    const { Word, Synonym } = req.models
-    const { Op } = req.models.sequelize
+    const { Synonym, Word, IgnoredWord } = req.models
+    const service = new SinonimosCrawler()
 
-    // @todo: make cache that by phrase
-    const list = await Promise.all(
-      phrase.split(' ').map(async (value, position) => {
-        let synonyms = []
+    let list = []
+    await queuePromises(
+      phrase.split(' ').map((value, position) => {
+        return async () => {
+          const formatedValue = value.replace(/(,|\.|;|:|\?|!)/g, '')
+          let synonyms = []
 
-        if (value.length >= minWordLength) {
-          try {
-            const word = await Word.findOne({
-              where: {
-                word: value
-              }
-            })
-            if (word) {
-              const allSynonyms = await Synonym.findAll({
-                where: {
-                  [Op.or]: [{
-                    word_id: word.id
-                  }, {
-                    synonym_id: word.id
-                  }]
-                },
-                include: [{
-                  model: Word,
-                  as: 'word'
-                }, {
-                  model: Word,
-                  as: 'synonym'
-                }]
+          if (
+            formatedValue.length >= minWordLength &&
+            !formatedValue.includes('*')
+          ) {
+            try {
+              const isIgnored = await IgnoredWord.isIgnored({
+                localeId,
+                word: formatedValue
               })
-              synonyms = await Promise.all(
-                allSynonyms.map(item => {
-                  return {
-                    id: item.id,
-                    value: item.word_id === word.id
-                      ? item.synonym.word
-                      : item.word.word
+              if (!isIgnored) {
+                synonyms = await Synonym.getSynonyms(formatedValue)
+                if (synonyms.length === 0) {
+                  const count = await Word.count({
+                    where: {
+                      locale_id: localeId,
+                      word: formatedValue
+                    }
+                  })
+                  if (count === 0) {
+                    const newSynonyms = await service.search(formatedValue)
+                    await Word.addWordAndSynonyms({
+                      localeId,
+                      word: formatedValue,
+                      synonyms: newSynonyms
+                    })
+                    if (newSynonyms.length > 0) {
+                      synonyms = await Synonym.getSynonyms(formatedValue)
+                    }
                   }
-                })
-              )
+                }
+              }
+            } catch (error) {
+              console.log('-- error:', value, formatedValue, error.message)
             }
-          } catch (error) {
-            console.log(error)
           }
-        }
 
-        return {
-          position,
-          value,
-          synonyms
+          list.push({
+            position,
+            value,
+            synonyms
+          })
         }
       })
     )

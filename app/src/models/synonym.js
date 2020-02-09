@@ -2,6 +2,7 @@ import * as utils from '../helpers'
 
 export default (sequelize, DataTypes) => {
   let Word
+  const { Op } = sequelize
 
   /**
    * Synonyms
@@ -99,6 +100,50 @@ export default (sequelize, DataTypes) => {
       'synonym_id'
     ])
     return Synonym.create(data)
+  }
+
+  /**
+   * Retorna sinonimos
+   * @param {string} value
+   * @returns {Promise}
+   */
+  Synonym.getSynonyms = async function (value) {
+    let synonyms = []
+    const word = await Word.findOne({
+      where: {
+        word: value
+      }
+    })
+    if (word) {
+      const allSynonyms = await Synonym.findAll({
+        where: {
+          [Op.or]: [{
+            word_id: word.id
+          }, {
+            synonym_id: word.id
+          }]
+        },
+        include: [{
+          model: Word,
+          as: 'word'
+        }, {
+          model: Word,
+          as: 'synonym'
+        }]
+      })
+      synonyms = await Promise.all(
+        allSynonyms.map(item => {
+          const itemWord = item.word_id === word.id
+            ? item.synonym
+            : item.word
+          return {
+            value: itemWord.word,
+            meaning: itemWord.meaning
+          }
+        })
+      )
+    }
+    return synonyms
   }
 
   return Synonym

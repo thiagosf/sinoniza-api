@@ -120,5 +120,54 @@ export default (sequelize, DataTypes) => {
     return Word.create(data)
   }
 
+  /**
+   * Adiciona palavra e sinonimos
+   * @param {object} options
+   * @param {number} options.localeId
+   * @param {string} options.word
+   * @param {string} options.synonyms
+   * @returns {Promise}
+   */
+  Word.addWordAndSynonyms = async function ({ localeId, word, synonyms }) {
+    const meaning = null
+    const result = await Word.findOrCreate({
+      where: {
+        locale_id: localeId,
+        word,
+        meaning
+      }
+    })
+    const mainWord = result[0]
+    await utils.queuePromises(
+      synonyms.map(item => {
+        return async () => {
+          try {
+            const result = await Word.findOrCreate({
+              where: {
+                locale_id: localeId,
+                word: item.synonym
+              },
+              defaults: {
+                locale_id: localeId,
+                word: item.synonym,
+                meaning: item.meaning
+              }
+            })
+            const synonymWord = result[0]
+            await Synonym.findOrCreate({
+              where: {
+                word_id: mainWord.id,
+                synonym_id: synonymWord.id
+              }
+            })
+          } catch (error) {
+            console.log('Word::addWordAndSynonyms error:', item, error.message)
+          }
+        }
+      })
+    )
+    return mainWord
+  }
+
   return Word
 }

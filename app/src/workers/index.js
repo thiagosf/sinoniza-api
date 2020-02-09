@@ -1,7 +1,5 @@
 import Bull from 'bull'
-import models from '../models'
 import * as utils from '../helpers'
-import { NotificationServiceSendFactory } from '../services'
 
 const redisURL = process.env.DATABASE_REDIS_URL
 
@@ -36,69 +34,6 @@ const toMilliseconds = (delayString) => {
       break
   }
   return delay
-}
-
-/**
- * Envia e-mail
- * @param {object} job
- * @param {function} done
- */
-const notifyEmail = (job, done) => {
-  const { NotificationDelivery } = models
-  notifyFactory(NotificationDelivery.SERVICE_EMAIL, job.data)
-    .then(() => done())
-    .catch(done)
-}
-
-/**
- * Envia sms
- * @param {object} job
- * @param {function} done
- */
-const notifySms = (job, done) => {
-  const { NotificationDelivery } = models
-  notifyFactory(NotificationDelivery.SERVICE_SMS, job.data)
-    .then(() => done())
-    .catch(done)
-}
-
-/**
- * Envia push
- * @param {object} job
- * @param {function} done
- */
-const notifyPush = (job, done) => {
-  const { NotificationDelivery } = models
-  notifyFactory(NotificationDelivery.SERVICE_PUSH, job.data)
-    .then(() => done())
-    .catch(done)
-}
-
-/**
- * Instancia service de notificacao e envia
- * @param {number} service
- * @param {object} data
- * @returns {Promise}
- */
-const notifyFactory = (service, data) => {
-  const serviceInstance = new NotificationServiceSendFactory({
-    ...data,
-    service
-  })
-  return serviceInstance.send().then(result => {
-    utils.log('debug', 'notify', {
-      service,
-      result,
-      data
-    })
-  }).catch(error => {
-    utils.log('error', 'notify', {
-      service,
-      data,
-      error: error.message
-    })
-    throw new Error(error.message)
-  })
 }
 
 const actions = {
@@ -177,19 +112,7 @@ const actions = {
    * Instala filas
    */
   install () {
-    const items = [{
-      name: 'notify_email',
-      concurrency: 10,
-      fn: notifyEmail
-    }, {
-      name: 'notify_sms',
-      concurrency: 1,
-      fn: notifySms
-    }, {
-      name: 'notify_push',
-      concurrency: 10,
-      fn: notifyPush
-    }]
+    const items = []
 
     items.map((item) => {
       this.allQueues[item.name] = actions.buildQueue(item)

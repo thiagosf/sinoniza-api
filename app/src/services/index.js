@@ -1,7 +1,5 @@
-import NotificationService from './notification_service'
-import NotificationServiceSendFactory from './notification_service_send_factory'
+import SinonimosCrawler from './sinonimos_crawler'
 
 export {
-  NotificationService,
-  NotificationServiceSendFactory
+  SinonimosCrawler
 }
