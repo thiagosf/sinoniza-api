@@ -138,6 +138,12 @@ export default (sequelize, DataTypes) => {
       }
     })
     const mainWord = result[0]
+    const clearValue = value => {
+      return value.replace(/(\xC2|\x96)/g, '')
+        .split(' ')
+        .filter(v => v && v.length > 0)
+        .join(' ')
+    }
     await utils.queuePromises(
       synonyms.map(item => {
         return async () => {
@@ -145,12 +151,12 @@ export default (sequelize, DataTypes) => {
             const result = await Word.findOrCreate({
               where: {
                 locale_id: localeId,
-                word: item.synonym
+                word: clearValue(item.synonym)
               },
               defaults: {
                 locale_id: localeId,
-                word: item.synonym,
-                meaning: item.meaning
+                word: clearValue(item.synonym),
+                meaning: clearValue(item.meaning)
               }
             })
             const synonymWord = result[0]
@@ -161,7 +167,7 @@ export default (sequelize, DataTypes) => {
               }
             })
           } catch (error) {
-            console.log('Word::addWordAndSynonyms error:', item, error.message)
+            console.log('Word::addWordAndSynonyms error:', word, item, error)
           }
         }
       })

@@ -66,7 +66,7 @@ export default async (req, res, next) => {
                 }
               }
             } catch (error) {
-              console.log('-- error:', value, formatedValue, error.message)
+              console.log('-- error:', value, formatedValue, error)
             }
           }
 

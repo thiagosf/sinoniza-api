@@ -17,7 +17,8 @@ describe('helpers/sinonimos_crawler', function () {
         localeId: 1,
         word: 'oi',
         synonyms: [{
-          meaning: 'saudação',
+          // meaning: 'Como gíria – dinheiro',
+          meaning: 'Como gíria \xC2\x96 dinheiro',
           synonym: 'olá'
         }, {
           meaning: 'saudação',
