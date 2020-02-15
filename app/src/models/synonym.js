@@ -49,7 +49,7 @@ export default (sequelize, DataTypes) => {
     Synonym.belongsTo(Word, {
       onDelete: 'CASCADE',
       foreignKey: 'synonym_id',
-      as: 'synonym'
+      as: 'word_synonym'
     })
   }
 
@@ -69,8 +69,8 @@ export default (sequelize, DataTypes) => {
       const word = await this.word.publicData()
       output.word = word
     }
-    if (this.synonym) {
-      const synonym = await this.synonym.publicData()
+    if (this.word_synonym) {
+      const synonym = await this.word_synonym.publicData()
       output.synonym = synonym
     }
     return output
@@ -128,13 +128,13 @@ export default (sequelize, DataTypes) => {
           as: 'word'
         }, {
           model: Word,
-          as: 'synonym'
+          as: 'word_synonym'
         }]
       })
       synonyms = await Promise.all(
         allSynonyms.map(item => {
           const itemWord = item.word_id === word.id
-            ? item.synonym
+            ? item.word_synonym
             : item.word
           return {
             value: itemWord.word,

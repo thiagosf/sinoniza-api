@@ -20,6 +20,15 @@ module.exports = {
       'uma',
       'esta',
       'estou',
+      'que',
+      'quão',
+      'quem',
+      'como',
+      'isso',
+      'essa',
+      'esse',
+      'aquele',
+      'aquela',
     ].map(word => {
       return {
         locale_id: 1,

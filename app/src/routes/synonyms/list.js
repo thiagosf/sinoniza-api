@@ -45,6 +45,7 @@ export default async (req, res, next) => {
               })
               if (!isIgnored) {
                 synonyms = await Synonym.getSynonyms(formatedValue)
+                console.log('synonyms', synonyms)
                 if (synonyms.length === 0) {
                   const count = await Word.count({
                     where: {
@@ -54,6 +55,7 @@ export default async (req, res, next) => {
                   })
                   if (count === 0) {
                     const newSynonyms = await service.search(formatedValue)
+                    console.log('newSynonyms', newSynonyms)
                     await Word.addWordAndSynonyms({
                       localeId,
                       word: formatedValue,
