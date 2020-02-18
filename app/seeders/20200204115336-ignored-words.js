@@ -29,6 +29,8 @@ module.exports = {
       'esse',
       'aquele',
       'aquela',
+      'para',
+      'mim',
     ].map(word => {
       return {
         locale_id: 1,
