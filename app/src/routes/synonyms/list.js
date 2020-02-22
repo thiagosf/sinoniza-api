@@ -1,6 +1,9 @@
 import _ from 'lodash'
 import { queuePromises } from '../../helpers'
-import { SinonimosCrawler } from '../../services'
+import {
+  SinonimosCrawler,
+  DicioCrawler
+} from '../../services'
 
 export default async (req, res, next) => {
   try {
@@ -25,7 +28,8 @@ export default async (req, res, next) => {
     }
 
     const { Synonym, Word, IgnoredWord } = req.models
-    const service = new SinonimosCrawler()
+    const serviceSinonimos = new SinonimosCrawler()
+    const serviceDicio = new DicioCrawler()
 
     let list = []
     await queuePromises(
@@ -54,7 +58,12 @@ export default async (req, res, next) => {
                     }
                   })
                   if (count === 0) {
-                    const newSynonyms = await service.search(formatedValue)
+                    let newSynonyms
+                    newSynonyms = await serviceDicio.search(formatedValue)
+                    if (newSynonyms.length === 0) {
+                      newSynonyms = await serviceSinonimos.search(formatedValue)
+                      console.log('trying sinonimos service...')
+                    }
                     console.log('newSynonyms', newSynonyms)
                     await Word.addWordAndSynonyms({
                       localeId,

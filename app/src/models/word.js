@@ -139,7 +139,8 @@ export default (sequelize, DataTypes) => {
     })
     const mainWord = result[0]
     const clearValue = value => {
-      return value.replace(/(\xC2|\x96)/g, '')
+      return (value || '').toString()
+        .replace(/(\xC2|\x96)/g, '')
         .replace(/\r?\n|\r/g, '')
         .trim()
         .split(' ')
