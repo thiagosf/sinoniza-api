@@ -59,10 +59,10 @@ export default async (req, res, next) => {
                   })
                   if (count === 0) {
                     let newSynonyms
-                    newSynonyms = await serviceDicio.search(formatedValue)
+                    newSynonyms = await serviceSinonimos.search(formatedValue)
                     if (newSynonyms.length === 0) {
-                      newSynonyms = await serviceSinonimos.search(formatedValue)
-                      console.log('trying sinonimos service...')
+                      newSynonyms = await serviceDicio.search(formatedValue)
+                      console.log('trying dicio service...')
                     }
                     console.log('newSynonyms', newSynonyms)
                     await Word.addWordAndSynonyms({
