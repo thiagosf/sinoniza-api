@@ -3,6 +3,7 @@ import * as utils from '../helpers'
 export default (sequelize, DataTypes) => {
   let Locale
   let Synonym
+  const { Op } = sequelize
 
   /**
    * Words
@@ -138,6 +139,7 @@ export default (sequelize, DataTypes) => {
       }
     })
     const mainWord = result[0]
+
     const clearValue = value => {
       return (value || '').toString()
         .replace(/(\xC2|\x96)/g, '')
@@ -147,28 +149,48 @@ export default (sequelize, DataTypes) => {
         .filter(v => v && v.length > 0)
         .join(' ')
     }
+
+    const createWordAndSynonym = async (word, synonym) => {
+      const result = await Word.findOrCreate({
+        where: {
+          locale_id: localeId,
+          word: clearValue(synonym.synonym)
+        },
+        defaults: {
+          locale_id: localeId,
+          word: clearValue(synonym.synonym),
+          meaning: clearValue(synonym.meaning)
+        }
+      })
+      const synonymWord = result[0]
+      await Synonym.findOrCreate({
+        where: {
+          [Op.or]: [{
+            word_id: word.id,
+            synonym_id: synonymWord.id
+          }, {
+            word_id: synonymWord.id,
+            synonym_id: word.id
+          }]
+        },
+        defaults: {
+          word_id: word.id,
+          synonym_id: synonymWord.id
+        }
+      })
+      return synonymWord
+    }
+
     await utils.queuePromises(
       synonyms.map(item => {
         return async () => {
           try {
-            const result = await Word.findOrCreate({
-              where: {
-                locale_id: localeId,
-                word: clearValue(item.synonym)
-              },
-              defaults: {
-                locale_id: localeId,
-                word: clearValue(item.synonym),
-                meaning: clearValue(item.meaning)
+            const synonym = await createWordAndSynonym(mainWord, item)
+            for (let another of synonyms) {
+              if (item !== another) {
+                await createWordAndSynonym(synonym, another)
               }
-            })
-            const synonymWord = result[0]
-            await Synonym.findOrCreate({
-              where: {
-                word_id: mainWord.id,
-                synonym_id: synonymWord.id
-              }
-            })
+            }
           } catch (error) {
             console.log('Word::addWordAndSynonyms error:', word, item, error)
           }

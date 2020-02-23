@@ -15,6 +15,7 @@ describe('helpers/sinonimos_crawler', function () {
   describe('search', () => {
     it('should search synonyms', async () => {
       const synonyms = await this.service.search('esperto')
+      console.log(synonyms)
       assert(synonyms[0].hasOwnProperty('meaning'), 'meaning')
       assert(synonyms[0].hasOwnProperty('synonym'), 'synonym')
     })
