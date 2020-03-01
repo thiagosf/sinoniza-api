@@ -17,6 +17,8 @@ export default async (req, res, next) => {
       throw new Error('Empty phrase')
     }
 
+    console.log('- phrase:', phrase)
+
     const pieces = _.uniq(
       phrase.split(' ')
         .map(item => item.trim())
@@ -49,7 +51,7 @@ export default async (req, res, next) => {
               })
               if (!isIgnored) {
                 synonyms = await Synonym.getSynonyms(formatedValue)
-                console.log('synonyms', synonyms)
+                console.log('-- synonyms', synonyms)
                 if (synonyms.length === 0) {
                   const count = await Word.count({
                     where: {
@@ -62,9 +64,9 @@ export default async (req, res, next) => {
                     newSynonyms = await serviceSinonimos.search(formatedValue)
                     if (newSynonyms.length === 0) {
                       newSynonyms = await serviceDicio.search(formatedValue)
-                      console.log('trying dicio service...')
+                      console.log('-- trying dicio service...')
                     }
-                    console.log('newSynonyms', newSynonyms)
+                    console.log('-- newSynonyms', newSynonyms)
                     await Word.addWordAndSynonyms({
                       localeId,
                       word: formatedValue,

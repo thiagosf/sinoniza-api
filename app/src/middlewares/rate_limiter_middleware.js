@@ -2,7 +2,7 @@ import { RateLimiterMySQL } from 'rate-limiter-flexible'
 
 const rateLimiterMiddleware = (req, res, next) => {
   const options = {
-    points: 50,
+    points: 15,
     duration: 15,
     storeClient: req.models.sequelize,
     dbName: req.models.sequelize.config.database,
@@ -16,7 +16,7 @@ const rateLimiterMiddleware = (req, res, next) => {
       console.log('-- rate limiter middleware error:', err)
       next()
     } else {
-      rateLimiter.consume(req.connection.remoteAddress)
+      rateLimiter.consume(req.headers['x-forwarded-for'])
         .then((rateLimiterRes) => {
           next()
         })
