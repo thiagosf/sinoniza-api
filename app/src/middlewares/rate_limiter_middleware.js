@@ -2,8 +2,8 @@ import { RateLimiterMySQL } from 'rate-limiter-flexible'
 
 const rateLimiterMiddleware = (req, res, next) => {
   const options = {
-    points: 15,
-    duration: 15,
+    points: +(process.env.RATE_LIMITER_POINTS || 10),
+    duration: +(process.env.RATE_LIMITER_DURATION || 15),
     storeClient: req.models.sequelize,
     dbName: req.models.sequelize.config.database,
     tableName: 'rate_limiter'
