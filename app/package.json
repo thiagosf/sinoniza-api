@@ -47,7 +47,7 @@
     "jake": "^8.1.1",
     "js-yaml": "^3.13.1",
     "jsonwebtoken": "^8.4.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "moment": "^2.22.2",
     "mysql2": "^1.6.4",
     "node-schedule": "^1.3.0",
