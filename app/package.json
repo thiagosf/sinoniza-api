@@ -30,7 +30,7 @@
     "@sendgrid/mail": "^6.3.1",
     "agenda": "^2.0.2",
     "axios": "^0.18.0",
-    "bcrypt": "^3.0.2",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.18.3",
     "bull": "^3.10.0",
     "cheerio": "^1.0.0-rc.3",
